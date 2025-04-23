@@ -44,48 +44,57 @@ const Section = styled.section`
         margin: 0.5rem;
     }
 `
-export default function WorkoutChallenge({title, description, time, onComplete}) {
+export default function WorkoutChallenge({title, description, targetTime, onComplete}) {
     const timer = useRef();
     const dialog = useRef();
 
-    const [timerStarted, setTimerStarted] = useState(false);
-    const [timerStopped, setTimerStopped] = useState(false);
-    const [timerExpired, setTimerExpired] = useState(false);
-    const minutes = Math.floor(time / 60);
-    const seconds = Math.floor(time % 60);
+    const [ timerRemaining, setTimeRemaining ] = useState(targetTime * 1000);
+    const timeIsActive = timerRemaining > 0 && timerRemaining < targetTime * 1000;
+    const minutes = Math.floor(targetTime / 60);
+    const seconds = Math.floor(targetTime % 60);
     const formattedTime = `${minutes} minute${minutes > 1 ? 's' : ''} ${seconds.toString().padStart(1, '0')} second${seconds > 1 ? 's' : ''}`;
 
+    if(timerRemaining <= 0 ) {
+        clearInterval(timer.current);
+        dialog.current.open();
+    }
+
+    function handleReset() {
+        setTimeRemaining(targetTime * 1000);
+    }
+
     function handleStart() {
-        setTimerStarted(true);
-        console.log(time);
-        timer.current = setTimeout(() => {
-            setTimerExpired(true);
-            setTimerStarted(false);
-            dialog.current.showModal();
-            onComplete();
-        }, time * 1000);
+        timer.current = setInterval(() => {
+            setTimeRemaining(prevTimeRemaining => prevTimeRemaining - 10);
+        }, 10);
     }
 
     function handleStop() {
-        clearTimeout(timer.current);
-        setTimerStarted(true);
-        setTimerStopped(true);
+        dialog.current.open();
+        clearInterval(timer.current);
     }
 
     return (
         <>
-            <ResultModal ref={dialog} timer={formattedTime} result="lost" />
+            <ResultModal
+                ref={dialog}
+                targetTime={targetTime}
+                timer={formattedTime}
+                result="lost"
+                remainingTime={timerRemaining}
+                onReset={handleReset}
+            />
             <Section className="sm:w-[22rem]">
                 <h2>{title}</h2>
                 <p>{description}</p>
                 <p className="challenge-time">
                     {formattedTime}
                 </p>
-                <button onClick={timerStarted ? handleStop : handleStart}>
-                    {timerStarted ? 'Stop' : 'Start'} Timer
+                <button onClick={timeIsActive ? handleStop : handleStart}>
+                    {timeIsActive ? 'Stop' : 'Start'} Timer
                 </button>
-                <p className={timerStarted && !timerStopped ? 'active' : 'undefined'}>
-                    {!timerStopped ? (timerStarted ? 'Timer is running...' : 'Time is inactive') : 'Timer is stopped'}
+                <p className={timeIsActive ? 'active' : 'undefined'}>
+                    {timeIsActive ? 'Timer is running...' : 'Time is inactive'}
                 </p>
             </Section>
         </>

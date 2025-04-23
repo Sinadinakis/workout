@@ -6,17 +6,17 @@ const workouts = [
     {
         title: 'Pushups',
         description: 'Do 30 pushups',
-        time: 60 * 0.01,
+        targetTime: 60 * 1,
     },
     {
         title: 'Squats',
         description: 'Do 30 squats',
-        time: 60 * 2,
+        targetTime: 60 * 2,
     },
     {
         title: 'Pullups',
         description: 'Do 10 pullups',
-        time: 60 * 3,
+        targetTime: 60 * 3,
     },
 ];
 
