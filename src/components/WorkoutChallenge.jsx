@@ -1,5 +1,7 @@
 import {useRef, useState} from "react";
-import { styled } from "styled-components";
+import {styled} from "styled-components";
+import ResultModal from "./ResultModal.jsx";
+
 const Section = styled.section`
     @apply flex flex-col flex-wrap gap-2 items-center justify-center;
     max-width: 50rem;
@@ -45,41 +47,50 @@ const Section = styled.section`
         margin: 0.5rem;
     }
 `
-export default function WorkoutChallenge({title, description, time,onComplete }) {
-    const [ timerStarted, setTimerStarted] = useState(false);
-    const [ timerStopped, setTimerStopped] = useState(false);
+export default function WorkoutChallenge({title, description, time, onComplete}) {
+    const [timerStarted, setTimerStarted] = useState(false);
+    const [timerStopped, setTimerStopped] = useState(false);
 
-    const [ timerExpired, setTimerExpired] = useState(false);
+    const [timerExpired, setTimerExpired] = useState(false);
     let timer = useRef();
+    const minutes = Math.floor(time / 60);
+    const seconds = Math.floor(time % 60);
+    const formattedTime = `${minutes} minute${minutes > 1 ? 's' : ''} ${seconds.toString().padStart(1, '0')} second${seconds > 1 ? 's' : ''}`;
+
     function handleStart() {
         setTimerStarted(true);
+        console.log(time);
         timer.current = setTimeout(() => {
+            console.log('timer start');
             setTimerExpired(true);
             setTimerStarted(false);
+            onComplete();
         }, time * 1000);
+        console.log('timer stop');
     }
 
     function handleStop() {
         clearTimeout(timer.current);
         setTimerStarted(true);
         setTimerStopped(true);
-        onComplete();
     }
 
     return (
-        <Section>
-            <h2>{title}</h2>
-            <p>{description}</p>
-            {timerExpired && <p>You lost</p>}
-            <p className="challenge-time">
-                {time  / 1000 / 60} minute{time > 1 ? 's' : ''}
-            </p>
-            <button onClick={timerStarted ? handleStop : handleStart}>
-                {timerStarted ? 'Stop' : 'Start'} Timer
-            </button>
-            <p className={timerStarted && !timerStopped ? 'active' : 'undefined'}>
-                {!timerStopped ? (timerStarted ? 'Timer is running...' : 'Time is inactive') : 'Timer is stopped'}
-            </p>
-        </Section>
+        <>
+            {timerExpired && <ResultModal timer={formattedTime} result="lost" />}
+            <Section>
+                <h2>{title}</h2>
+                <p>{description}</p>
+                <p className="challenge-time">
+                    {formattedTime}
+                </p>
+                <button onClick={timerStarted ? handleStop : handleStart}>
+                    {timerStarted ? 'Stop' : 'Start'} Timer
+                </button>
+                <p className={timerStarted && !timerStopped ? 'active' : 'undefined'}>
+                    {!timerStopped ? (timerStarted ? 'Timer is running...' : 'Time is inactive') : 'Timer is stopped'}
+                </p>
+            </Section>
+        </>
     )
 }
