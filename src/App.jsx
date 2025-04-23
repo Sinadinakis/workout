@@ -6,7 +6,7 @@ const workouts = [
     {
         title: 'Pushups',
         description: 'Do 30 pushups',
-        time: 60 * 0.2,
+        time: 60 * 0.01,
     },
     {
         title: 'Squats',
@@ -31,9 +31,12 @@ function App() {
     }
 
     return (
-        <>
+        <div className="max-w-6xl mx-auto bg-black px-4 sm:px-8 rounded-2xl md:my-2">
+            <header className="pt-8">
+                <h1>The <em>Best</em> Workout</h1>
+            </header>
             <User/>
-            <div id="challenges">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                 {workouts.map((workout) => (
                     <div key={workout.title}>
                         <WorkoutChallenge
@@ -43,7 +46,7 @@ function App() {
                     </div>
                 ))}
             </div>
-            <section>
+            <section className="max-w-5xl mx-auto pb-20">
                 <h2>Completed workouts</h2>
                 <ul>
                     {completedWorkouts.map((workoutTitle, index) => (
@@ -51,7 +54,7 @@ function App() {
                     ))}
                 </ul>
             </section>
-        </>
+        </div>
     );
 }
 

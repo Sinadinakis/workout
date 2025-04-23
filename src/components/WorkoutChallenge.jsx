@@ -3,10 +3,7 @@ import {styled} from "styled-components";
 import ResultModal from "./ResultModal.jsx";
 
 const Section = styled.section`
-    @apply flex flex-col flex-wrap gap-2 items-center justify-center;
-    max-width: 50rem;
     margin: 3rem auto;
-    width: 22rem;
     padding: 2rem;
     background: linear-gradient(#b6ff84, #4f8759);
     color: #221c18;
@@ -48,11 +45,12 @@ const Section = styled.section`
     }
 `
 export default function WorkoutChallenge({title, description, time, onComplete}) {
+    const timer = useRef();
+    const dialog = useRef();
+
     const [timerStarted, setTimerStarted] = useState(false);
     const [timerStopped, setTimerStopped] = useState(false);
-
     const [timerExpired, setTimerExpired] = useState(false);
-    let timer = useRef();
     const minutes = Math.floor(time / 60);
     const seconds = Math.floor(time % 60);
     const formattedTime = `${minutes} minute${minutes > 1 ? 's' : ''} ${seconds.toString().padStart(1, '0')} second${seconds > 1 ? 's' : ''}`;
@@ -61,12 +59,11 @@ export default function WorkoutChallenge({title, description, time, onComplete})
         setTimerStarted(true);
         console.log(time);
         timer.current = setTimeout(() => {
-            console.log('timer start');
             setTimerExpired(true);
             setTimerStarted(false);
+            dialog.current.showModal();
             onComplete();
         }, time * 1000);
-        console.log('timer stop');
     }
 
     function handleStop() {
@@ -77,8 +74,8 @@ export default function WorkoutChallenge({title, description, time, onComplete})
 
     return (
         <>
-            {timerExpired && <ResultModal timer={formattedTime} result="lost" />}
-            <Section>
+            <ResultModal ref={dialog} timer={formattedTime} result="lost" />
+            <Section className="sm:w-[22rem]">
                 <h2>{title}</h2>
                 <p>{description}</p>
                 <p className="challenge-time">
