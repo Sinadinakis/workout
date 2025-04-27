@@ -15,11 +15,29 @@ body {
   min-height: 100vh;
 }
 
-#content {
+#app.light {
+  background: radial-gradient(#0b201d, #021619);
+  color: #180d27;
+
+  & button {
+    background: #12352f;
+  }
+}
+
+#app.dark {
+  background: linear-gradient(#341f4f, #2a0c52);
+  color: #e5d9f1;
+
+  & button {
+    background: #e5d9f1;
+    color: black;
+  }
+}
+
+#app {
   max-width: 60rem;
   margin: 2rem auto;
   padding: 2rem;
-  background: radial-gradient(#0b201d, #021619);
   border-radius: 16px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
   display: flex;
