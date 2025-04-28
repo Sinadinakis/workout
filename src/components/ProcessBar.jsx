@@ -1,7 +1,7 @@
 import {useEffect, useState} from "react";
 
 export default function ProcessBar({ timer }) {
-    const [remainingTime, setRemainingTime ] = useState(TIMER);
+    const [remainingTime, setRemainingTime ] = useState(timer);
 
     useEffect(() => {
         const intervalId = setInterval(() => {
