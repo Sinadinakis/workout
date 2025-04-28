@@ -46,9 +46,9 @@ const Section = styled.section`
 `
 export default function WorkoutChallenge({title, description, targetTime, onComplete}) {
     const timer = useRef();
-    const dialog = useRef();
 
     const [ timerRemaining, setTimeRemaining ] = useState(targetTime * 1000);
+    const [ isModalOpen, setIsModalOpen ] = useState(false);
     const timeIsActive = timerRemaining > 0 && timerRemaining < targetTime * 1000;
     const minutes = Math.floor(targetTime / 60);
     const seconds = Math.floor(targetTime % 60);
@@ -56,11 +56,12 @@ export default function WorkoutChallenge({title, description, targetTime, onComp
 
     if(timerRemaining <= 0 ) {
         clearInterval(timer.current);
-        dialog.current.open();
+        setIsModalOpen(true);
     }
 
     function handleReset() {
         setTimeRemaining(targetTime * 1000);
+        setIsModalOpen(false);
     }
 
     function handleStart() {
@@ -70,14 +71,14 @@ export default function WorkoutChallenge({title, description, targetTime, onComp
     }
 
     function handleStop() {
-        dialog.current.open();
+        setIsModalOpen(true);
         clearInterval(timer.current);
     }
 
     return (
         <>
             <ResultModal
-                ref={dialog}
+                open={isModalOpen}
                 targetTime={targetTime}
                 timer={formattedTime}
                 result="lost"

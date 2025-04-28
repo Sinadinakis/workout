@@ -1,19 +1,18 @@
-import { useImperativeHandle, useRef } from "react";
+import {useEffect, useRef} from "react";
 import { createPortal } from 'react-dom';
 
-export default function ResultModal({ref, result, targetTime, timer, remainingTime, onReset}) {
+export default function ResultModal({open, result, targetTime, timer, remainingTime, onReset}) {
     const dialogRef = useRef();
     const lost = remainingTime <= 0;
-    const formattedRemainingTime = (remainingTime /1000).toFixed(2);
+    const formattedRemainingTime = (remainingTime /1000).toFixed(0);
     const score = Math.round((1 - remainingTime / (targetTime * 1000)) * 100);
 
-    useImperativeHandle(ref, () => {
-        return {
-            open() {
-                dialogRef.current.showModal();
-            }
+    useEffect(() => {
+        if (open) {
+            dialogRef.current.showModal();
         }
-    })
+    }, [open]);
+
     return createPortal(
         <dialog ref={dialogRef} className="result-modal sm:fixed sm:left-[40%] md:top-[30%] z-10" onClose={onReset}>
             <div className="flex flex-col min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
