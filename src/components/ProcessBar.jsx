@@ -1,5 +1,4 @@
 import {useEffect, useState} from "react";
-const TIMER = 3000;
 
 export default function ProcessBar({ timer }) {
     const [remainingTime, setRemainingTime ] = useState(TIMER);
@@ -12,5 +11,5 @@ export default function ProcessBar({ timer }) {
         return () => clearInterval(intervalId);
     }, []);
 
-    return (<progress value={remainingTime} max={TIMER}/>)
+    return (<progress value={remainingTime} max={timer}/>)
 }
