@@ -1,6 +1,7 @@
-import {useRef, useState} from "react";
+import {useRef, useState, useCallback} from "react";
 import {styled} from "styled-components";
 import ResultModal from "./ResultModal.jsx";
+import Modal from "./Modal.jsx";
 
 const Section = styled.section`
     margin: 3rem auto;
@@ -47,14 +48,14 @@ const Section = styled.section`
 export default function WorkoutChallenge({title, description, targetTime, onComplete}) {
     const timer = useRef();
 
-    const [ timerRemaining, setTimeRemaining ] = useState(targetTime * 1000);
-    const [ isModalOpen, setIsModalOpen ] = useState(false);
+    const [timerRemaining, setTimeRemaining] = useState(targetTime * 1000);
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const timeIsActive = timerRemaining > 0 && timerRemaining < targetTime * 1000;
     const minutes = Math.floor(targetTime / 60);
     const seconds = Math.floor(targetTime % 60);
     const formattedTime = `${minutes} minute${minutes > 1 ? 's' : ''} ${seconds.toString().padStart(1, '0')} second${seconds > 1 ? 's' : ''}`;
 
-    if(timerRemaining <= 0 ) {
+    if (timerRemaining <= 0) {
         clearInterval(timer.current);
         setIsModalOpen(true);
     }
@@ -77,14 +78,15 @@ export default function WorkoutChallenge({title, description, targetTime, onComp
 
     return (
         <>
-            <ResultModal
-                open={isModalOpen}
-                targetTime={targetTime}
-                timer={formattedTime}
-                result="lost"
-                remainingTime={timerRemaining}
-                onReset={handleReset}
-            />
+            <Modal open={isModalOpen}  onReset={handleReset}>
+                <ResultModal
+                    targetTime={targetTime}
+                    timer={formattedTime}
+                    result="lost"
+                    remainingTime={timerRemaining}
+                    onReset={handleReset}
+                />
+            </Modal>
             <Section className="sm:w-[22rem]">
                 <h2>{title}</h2>
                 <p>{description}</p>
