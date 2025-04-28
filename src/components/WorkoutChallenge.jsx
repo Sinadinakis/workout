@@ -78,14 +78,15 @@ export default function WorkoutChallenge({title, description, targetTime, onComp
 
     return (
         <>
-            <Modal open={isModalOpen}  onReset={handleReset}>
-                <ResultModal
-                    targetTime={targetTime}
-                    timer={formattedTime}
-                    result="lost"
-                    remainingTime={timerRemaining}
-                    onReset={handleReset}
-                />
+            <Modal open={isModalOpen} onReset={handleReset}>
+                {isModalOpen ?
+                    <ResultModal
+                        targetTime={targetTime}
+                        timer={formattedTime}
+                        result="lost"
+                        remainingTime={timerRemaining}
+                        onReset={handleReset}
+                    /> : null}
             </Modal>
             <Section className="sm:w-[22rem]">
                 <h2>{title}</h2>
